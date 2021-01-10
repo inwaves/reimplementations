@@ -1,18 +1,31 @@
-from util import sigmoid
-import numpy as np
 import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
+import numpy as np
+from util import sigmoid
 
 
 class LSTM:
 
-    def __init__(self):
+    def __init__(self, path_to_dataset):
+        with open(path_to_dataset, "r") as text_in:
+            text = text_in.read()
+    
+        # get unique words, sort alphabetically
+        self.vocab = sorted(set(text)) 
+        
+        # for each character in the text, associate an integer value
+        # FIXME: this uses integers to encode, not one-hot! why one, why the other?
+        self.char2idx = {u:i for i, u in enumerate(self.vocab)}
+        self.idx2char = np.array(self.vocab)
+
+        # represent the text as an array of integers
+        self.text_as_int = np.array([self.char2idx[c] for c in text])
         pass
     
     # TODO: initialise parameters!
     def initialise_parameters():
-        # what are my parameters?
+
         pass
 
     def forget_gate(self, concat_tensor, Wf, bf):
@@ -70,5 +83,6 @@ class LSTM:
 
 
 if __name__ == "__main__":
-    print(sys.path)
-    print(sigmoid(0))
+    model = LSTM("data/infinite_jest_text.txt")
+    print(model.text_as_int.shape)
+    print(model.vocab)
